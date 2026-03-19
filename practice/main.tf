@@ -1,0 +1,20 @@
+resource "aws_vpc" "main" {
+  cidr_block       = var.vpc_cidr
+  instance_tenancy = "default"
+  enable_dns_hostnames = true
+
+  tags = local.vpc_final_tags
+}
+
+resource "aws_subnet" "public" {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = var.public_subnet
+
+  tags = merge(
+    local.common_tags,
+    {
+        Name = "${var.project}-${var.environment}-public"
+    },
+    var.public_subnet_tags
+  )
+}
